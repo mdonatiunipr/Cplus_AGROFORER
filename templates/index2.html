@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DST Sostenibilità & Carbonio - Smart Advisor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #059669;
+            --primary-hover: #047857;
+            --primary-light: #d1fae5;
+            --secondary: #334155;
+            --border: #e2e8f0;
+            --danger-bg: #fef2f2;
+            --danger-text: #b91c1c;
+            --danger-border: #fca5a5;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #022c22 0%, #065f46 100%);
+            color: white;
+            padding: 4rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            pointer-events: none;
+        }
+
+        .header h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; }
+        .header p { font-size: 1.15rem; color: #a7f3d0; max-width: 700px; margin: 0 auto; font-weight: 500; }
+
+        .container {
+            max-width: 1000px;
+            margin: -3rem auto 4rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title span {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            font-size: 1rem;
+        }
+
+        .card-desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--secondary); }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .help-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+        /* Custom Checkbox Grid */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        
+        .checkbox-label:hover { border-color: #a7f3d0; background: #f0fdf4; }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-top: 0.25rem;
+            width: 1.2rem; height: 1.2rem;
+            accent-color: var(--primary);
+        }
+        
+        .checkbox-label span { font-weight: 500; font-size: 0.95rem; color: var(--secondary); }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-block;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1.5px solid var(--border);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover { background-color: #f1f5f9; color: var(--secondary); }
+
+        .actions { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-top: 1rem; }
+
+        .alert {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: var(--danger-text);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+
+        /* Results Styling */
+        .results-header {
+            text-align: center;
+            margin: 4rem 0 2rem;
+        }
+        .results-header h2 { font-size: 2.2rem; color: var(--text-main); font-weight: 800; }
+        
+        .schema-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .schema-card.top-match {
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.25);
+        }
+        .top-match-badge {
+            position: absolute; top: 0; right: 2rem;
+            background: var(--primary); color: white;
+            padding: 0.5rem 1rem;
+            border-bottom-left-radius: var(--radius-md);
+            border-bottom-right-radius: var(--radius-md);
+            font-weight: 700; font-size: 0.85rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .schema-header {
+            padding: 2rem;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 2rem;
+        }
+
+        .schema-title-wrapper { display: flex; align-items: center; gap: 1.25rem; }
+        .schema-icon { font-size: 3rem; }
+        .schema-title h3 { font-size: 1.75rem; color: var(--text-main); margin-bottom: 0.25rem; font-weight: 800; }
+        .schema-category { display: inline-block; background: var(--primary-light); color: var(--primary-hover); padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .score-circle {
+            text-align: center;
+        }
+        .score-value {
+            font-size: 2.5rem; font-weight: 800; color: var(--primary);
+            line-height: 1; margin-bottom: 0.25rem;
+        }
+        .score-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+        .progress-bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--primary); border-radius: 99px; transition: width 1s ease-out; }
+
+        .schema-body { padding: 2rem; }
+        .schema-desc { font-size: 1.1rem; color: var(--secondary); margin-bottom: 2rem; font-weight: 500; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .info-section h4 { font-size: 1rem; color: var(--text-main); font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem; }
+        
+        .info-list { list-style: none; }
+        .info-list li { margin-bottom: 0.75rem; display: flex; gap: 0.75rem; font-size: 0.95rem; color: var(--secondary); }
+        .info-list li::before { content: '✓'; color: var(--primary); font-weight: bold; }
+        
+        .info-list.cons li::before { content: '✕'; color: var(--danger-text); }
+
+        .motivations-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            margin-top: 2rem;
+        }
+        .motivations-box h4 { color: var(--primary-hover); margin-bottom: 0.75rem; font-size: 0.95rem; }
+        .motivations-list { list-style: none; font-size: 0.9rem; color: #166534; }
+        .motivations-list li { margin-bottom: 0.4rem; padding-left: 1rem; position: relative; }
+        .motivations-list li::before { content: '•'; position: absolute; left: 0; color: #22c55e; }
+
+        .meta-footer {
+            margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+            display: flex; gap: 2rem; font-size: 0.9rem; color: var(--text-muted);
+        }
+        .meta-footer strong { color: var(--text-main); }
+
+        @media (max-width: 768px) {
+            .grid-2, .actions, .info-grid { grid-template-columns: 1fr; }
+            .schema-header { flex-direction: column; text-align: center; }
+            .schema-title-wrapper { flex-direction: column; }
+            .actions .btn-secondary { order: 2; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <h1>Strumento di Orientamento per la Valorizzazione delle Superfici Forestali </h1>
+    <p>Inserisci le informazioni richieste per individuare gli schemi di certificazione e rendicontazione ambientali più adatti alle caratteristiche della tua azienda</p>
+</header>
+
+<main class="container">
+    {% if error %}
+    <div class="alert">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="/valuta">
+        
+        <!-- SEZIONE 1 -->
+        <div class="card">
+            <h2 class="card-title"><span>1</span> Profilo Aziendale</h2>
+            <p class="card-desc">Inserisci i dati strutturali e l'estensione delle superfici a disposizione.</p>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="settore">Settore prevalente</label>
+                    <select id="settore" name="settore" required>
+                        {% for value, label in [('agricolo','Agricolo'),('forestale','Forestale'),('agroforestale','Agroforestale'),('altro','Altro')] %}
+                        <option value="{{ value }}" {% if form.get('settore') == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="superficie_totale">Superficie totale (ha)</label>
+                    <input type="number" min="0.1" step="0.1" id="superficie_totale" name="superficie_totale" value="{{ form.get('superficie_totale', '') }}" placeholder="Es. 25.5" required>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="superficie_bosco">Di cui boschiva (ha)</label>
+                    <input type="number" min="0" step="0.1" id="superficie_bosco" name="superficie_bosco" value="{{ form.get('superficie_bosco', 0) }}">
+                </div>
+                <div class="form-group">
+                    <label for="superficie_agricola">Di cui agricola (ha)</label>
+                    <input type="number" min="0" step="0.1" id="superficie_agricola" name="superficie_agricola" value="{{ form.get('superficie_agricola', 0) }}">
+                </div>
+                <div class="form-group">
+                    <label for="superficie_altra">Altre superfici (ha)</label>
+                    <input type="number" min="0" step="0.1" id="superficie_altra" name="superficie_altra" value="{{ form.get('superficie_altra', 0) }}">
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 1.5rem;">
+                <label for="nuova_piantumazione">Superficie che l'azienda vuole destinare a nuova piantumazione (ha)</label>
+                <input type="number" min="0" step="0.1" id="nuova_piantumazione" name="nuova_piantumazione" value="{{ form.get('nuova_piantumazione', 0) }}">
+                <p class="help-text">Superficie che l'azienda intende convertire ad area boschiva</p>
+            </div>
+        </div>
+
+        <!-- SEZIONE 2 -->
+        <div class="card">
+            <h2 class="card-title"><span>2</span> Obiettivi e Motivazioni</h2>
+            <p class="card-desc">Quali sono le ragioni principali che spingono l'azienda verso questo percorso? (Seleziona una o più opzioni)</p>
+            
+            {% set selected = form.get('motivazioni', []) %}
+            <div class="checkbox-grid">
+                {% for value, label in [
+                    ('report_sostenibilita','Redigere un report di sostenibilità (ESG)'),
+                    ('misurare_emissioni','Calcolare la Carbon Footprint aziendale'),
+                    ('vendita_crediti','Vendere crediti di carbonio / di sostenibilità sul mercato'),
+                    ('richiesta_clienti','Rispondere a richieste della filiera o dei clienti'),
+                    ('compensazione','Compensare le proprie emissioni di CO2'),
+                    ('gestione_sostenibile','Migliorare la gestione e i processi interni'),
+                    ('riduzione_emissioni','Impostare un piano di riduzione delle emissioni'),
+                    ('reputazione','Migliorare la reputazione nei confronti dei propri stakeholder'),
+                    ('biodiversita','Valorizzare gli impatti positivi sulla biodiversità')
+                ] %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="motivazioni" value="{{ value }}" {% if value in selected %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 -->
+        <div class="card">
+            <h2 class="card-title"><span>3</span> Esperienza e Risorse</h2>
+            <p class="card-desc">Fornisci un'indicazione delle risorse disponibili e del tuo livello di conoscenze degli strumenti di certificazione/rendicontazione</p>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="dati_disponibili">Qualità dei dati interni (consumo gasolio, elettricità, ...)</label>
+                    <select id="dati_disponibili" name="dati_disponibili" required>
+                        <option value="bassi" {% if form.get('dati_disponibili') == 'bassi' %}selected{% endif %}>Bassa (dati frammentari, difficile reperibilità)</option>
+                        <option value="medi" {% if form.get('dati_disponibili') == 'medi' %}selected{% endif %}>Media (dati di base presenti in contabilità)</option>
+                        <option value="alti" {% if form.get('dati_disponibili') == 'alti' %}selected{% endif %}>Alta (sistema gestionale o database strutturato)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="certificazioni_esistenti">Possiedi già certificazioni (es. ISO, BIO, FSC)?</label>
+                    <select id="certificazioni_esistenti" name="certificazioni_esistenti" required>
+                        <option value="no" {% if form.get('certificazioni_esistenti') == 'no' %}selected{% endif %}>No, è il primo approccio</option>
+                        <option value="si" {% if form.get('certificazioni_esistenti') == 'si' %}selected{% endif %}>Sì, abbiamo già esperienza</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="budget">Budget disponibile per il progetto</label>
+                    <select id="budget" name="budget" required>
+                        <option value="basso" {% if form.get('budget') == 'basso' %}selected{% endif %}>Limitato (meno di 1.000 €)</option>
+                        <option value="medio" {% if form.get('budget') == 'medio' %}selected{% endif %}>Medio (fino a 10.000 €)</option>
+                        <option value="alto" {% if form.get('budget') == 'alto' %}selected{% endif %}>Elevato (oltre 10.000 €)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="orizzonte">Orizzonte temporale desiderato</label>
+                    <select id="orizzonte" name="orizzonte" required>
+                        <option value="breve" {% if form.get('orizzonte') == 'breve' %}selected{% endif %}>Breve (risultati entro 12 mesi)</option>
+                        <option value="medio" {% if form.get('orizzonte') == 'medio' %}selected{% endif %}>Medio (1-3 anni)</option>
+                        <option value="lungo" {% if form.get('orizzonte') == 'lungo' %}selected{% endif %}>Lungo (impegni oltre i 5 anni)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary">Individua il Percorso più Adatto</button>
+            <a href="/" class="btn-secondary">Resetta Dati</a>
+        </div>
+    </form>
+
+    {% if result %}
+    <div id="risultati" class="results-header">
+        <h2>Un Supporto alla Tua Decisione</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">
+            Analisi elaborata per la tua azienda
+        </p>
+    </div>
+
+    <div class="results-container">
+        {% for item in result %}
+        <article class="schema-card {% if loop.first %}top-match{% endif %}">
+            {% if loop.first %}
+            <div class="top-match-badge">⭐ SCELTA RACCOMANDATA</div>
+            {% endif %}
+            
+            <div class="schema-header">
+                <div class="schema-title-wrapper">
+                    <div class="schema-icon">{{ item.icona }}</div>
+                    <div class="schema-title">
+                        <span class="schema-category">{{ item.categoria }}</span>
+                        <h3>{{ item.titolo }}</h3>
+                    </div>
+                </div>
+                
+                <div class="score-circle">
+                    <div class="score-value">{{ item.compatibilita }}%</div>
+                    <div class="score-label">Compatibilità</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 0%;" data-target="{{ item.compatibilita }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schema-body">
+                <p class="schema-desc">{{ item.descrizione }}</p>
+                
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h4>Target & Requisiti</h4>
+                        <p style="font-size: 0.9rem; color: var(--secondary); margin-bottom: 1rem;"><strong>A chi è adatto:</strong> {{ item.adatto_a }}</p>
+                        <ul class="info-list">
+                            {% for req in item.requisiti %}
+                            <li>{{ req }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>Pro & Contro</h4>
+                        <ul class="info-list">
+                            {% for v in item.vantaggi %}
+                            <li>{{ v }}</li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="info-list cons" style="margin-top: 1rem;">
+                            {% for c in item.criticita %}
+                            <li>{{ c }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                {% if item.motivi %}
+                <div class="motivations-box">
+                    <h4>💡 Perché ti proponiamo questo risultato (o perché è penalizzato):</h4>
+                    <ul class="motivations-list">
+                        {% for motivo in item.motivi %}
+                        <li>{{ motivo }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="meta-footer">
+                    <div><strong>Complessità:</strong> {{ item.complessita }}</div>
+                    <div><strong>Output atteso:</strong> {{ item.output }}</div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    
+    <script>
+        // Anima le progress bar al caricamento
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-target');
+                });
+            }, 300);
+            
+            // Scroll smooth ai risultati
+            document.getElementById('risultati').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    </script>
+    {% endif %}
+</main>
+
+</body>
+</html>
