@@ -29,7 +29,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
@@ -47,7 +47,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .header::after {
             content: '';
             position: absolute;
@@ -86,13 +86,14 @@
             gap: 0.75rem;
         }
 
-        .card-title span {
+        .card-title span.step-num {
             background: var(--primary-light);
             color: var(--primary);
             width: 32px; height: 32px;
             display: flex; align-items: center; justify-content: center;
             border-radius: 50%;
             font-size: 1rem;
+            flex-shrink: 0;
         }
 
         .card-desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
@@ -102,8 +103,8 @@
 
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--secondary); }
-        
-        input[type="number"], select {
+
+        input[type="number"], input[type="text"], select {
             width: 100%;
             padding: 0.85rem 1rem;
             border: 1.5px solid var(--border);
@@ -113,8 +114,8 @@
             transition: all 0.2s ease;
             background-color: #f8fafc;
         }
-        
-        input[type="number"]:focus, select:focus {
+
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
             outline: none;
             border-color: var(--primary);
             background-color: #fff;
@@ -122,6 +123,17 @@
         }
 
         .help-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+        .subsection-title {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-muted); margin: 2rem 0 1rem; padding-top: 1.5rem; border-top: 1px dashed var(--border);
+        }
+        .subsection-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+        .note-box {
+            background: #f8fafc; border: 1px dashed var(--border); border-radius: var(--radius-md);
+            padding: 1rem 1.25rem; font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;
+        }
 
         /* Custom Checkbox Grid */
         .checkbox-grid {
@@ -141,16 +153,84 @@
             transition: all 0.2s;
             background: #f8fafc;
         }
-        
+
         .checkbox-label:hover { border-color: #a7f3d0; background: #f0fdf4; }
-        
+
         .checkbox-label input[type="checkbox"] {
             margin-top: 0.25rem;
             width: 1.2rem; height: 1.2rem;
             accent-color: var(--primary);
+            flex-shrink: 0;
         }
-        
+
         .checkbox-label span { font-weight: 500; font-size: 0.95rem; color: var(--secondary); }
+
+        .checkbox-grid.compact { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+        .checkbox-grid.compact .checkbox-label { padding: 0.7rem 0.85rem; }
+        .checkbox-grid.compact .checkbox-label span { font-size: 0.88rem; }
+
+        /* Tooltip ("balloon") per termini gergali */
+        .tip {
+            position: relative;
+            border-bottom: 1px dotted var(--primary-hover);
+            color: var(--primary-hover);
+            font-weight: 700;
+            cursor: help;
+            white-space: nowrap;
+        }
+        .tip:focus { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 2px; }
+        /* Le label delle checkbox possono essere più lunghe di un termine gergale (es. "Copertura
+           vegetale del suolo (cover crop / inerbimento)") — qui il nowrap del tooltip generico
+           spingerebbe il testo fuori dalla cella della grid, sovrapponendosi alla successiva. */
+        .checkbox-label .tip { white-space: normal; }
+        .tip .tip-icon { font-size: 0.75em; vertical-align: super; }
+        .tip::after {
+            content: attr(data-tip);
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%) translateY(4px);
+            background: #0f172a;
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            white-space: normal;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            width: max-content;
+            max-width: 280px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 30;
+            pointer-events: none;
+        }
+        .tip::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 4px);
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #0f172a;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s ease;
+            z-index: 30;
+        }
+        .tip:hover::after, .tip:hover::before,
+        .tip:focus::after, .tip:focus::before {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 600px) {
+            .tip::after { max-width: 200px; left: 0; transform: translateX(0) translateY(4px); }
+            .tip::before { left: 1rem; transform: translateX(0); }
+            .tip:hover::after, .tip:focus::after { transform: translateX(0) translateY(0); }
+        }
 
         .btn-primary {
             background-color: var(--primary);
@@ -205,7 +285,7 @@
             margin: 4rem 0 2rem;
         }
         .results-header h2 { font-size: 2.2rem; color: var(--text-main); font-weight: 800; }
-        
+
         .schema-card {
             background: #fff;
             border-radius: var(--radius-lg);
@@ -259,13 +339,13 @@
         .schema-desc { font-size: 1.1rem; color: var(--secondary); margin-bottom: 2rem; font-weight: 500; }
 
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        
+
         .info-section h4 { font-size: 1rem; color: var(--text-main); font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem; }
-        
+
         .info-list { list-style: none; }
         .info-list li { margin-bottom: 0.75rem; display: flex; gap: 0.75rem; font-size: 0.95rem; color: var(--secondary); }
         .info-list li::before { content: '✓'; color: var(--primary); font-weight: bold; }
-        
+
         .info-list.cons li::before { content: '✕'; color: var(--danger-text); }
 
         .motivations-box {
@@ -310,34 +390,53 @@
     {% endif %}
 
     <form method="post" action="/valuta">
-        
-        <!-- SEZIONE 1 -->
+
+        <!-- SEZIONE 1 — Famiglia 1: Profilo aziendale -->
         <div class="card">
-            <h2 class="card-title"><span>1</span> Profilo Aziendale</h2>
-            <p class="card-desc">Inserisci i dati strutturali e l'estensione delle superfici a disposizione.</p>
-            
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="settore">Settore prevalente</label>
-                    <select id="settore" name="settore" required>
-                        {% for value, label in [('agricolo','Agricolo'),('forestale','Forestale'),('agroforestale','Agroforestale'),('altro','Altro')] %}
-                        <option value="{{ value }}" {% if form.get('settore') == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="superficie_totale">Superficie totale (ha)</label>
-                    <input type="number" min="0.1" step="0.1" id="superficie_totale" name="superficie_totale" value="{{ form.get('superficie_totale', '') }}" placeholder="Es. 25.5" required>
+            <h2 class="card-title"><span class="step-num">1</span> Profilo Aziendale</h2>
+            <p class="card-desc">Dati strutturali dell'azienda ed estensione delle superfici a disposizione. Corrisponde alla Famiglia 1 ("Profilo aziendale") della tabella dei criteri.</p>
+
+            <div class="form-group">
+                <label>
+                    Settore prevalente
+                </label>
+                <p class="help-text" style="margin-top: -0.25rem; margin-bottom: 0.75rem;">
+                    Seleziona una o più attività economiche prevalenti, secondo la classificazione
+                    <a href="https://unstats.un.org/unsd/publication/seriesm/seriesm_4rev4e.pdf" target="_blank" rel="noopener">ISIC Rev.4</a>
+                    (Divisioni 01 e 02).
+                </p>
+                {% set settore_selezionati = form.get('settore', []) %}
+                <div class="checkbox-grid">
+                    {% for value, label, tip in [
+                        ('01', 'Agricoltura, zootecnia e caccia (Divisione 01)', 'Include: coltivazioni non permanenti, coltivazioni permanenti, riproduzione delle piante, allevamento di animali, coltivazioni miste, attività di supporto all\'agricoltura e post-raccolta, caccia e servizi connessi (Gruppi ISIC 011-017).'),
+                        ('02', 'Silvicoltura e utilizzo di aree forestali (Divisione 02)', 'Include: silvicoltura e altre attività forestali, utilizzo di aree forestali (taglio), raccolta di prodotti forestali non legnosi, servizi di supporto alla silvicoltura (Gruppi ISIC 021-024).')
+                    ] %}
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="settore" value="{{ value }}" {% if value in settore_selezionati %}checked{% endif %}>
+                        <span class="tip" tabindex="0" data-tip="{{ tip }}">{{ label }}<span class="tip-icon">ⓘ</span></span>
+                    </label>
+                    {% endfor %}
                 </div>
             </div>
 
-            <div class="grid-3" style="margin-top: 1rem;">
+            <div class="grid-2">
                 <div class="form-group">
-                    <label for="superficie_bosco">Di cui boschiva (ha)</label>
+                    <label for="superficie_totale">Superficie totale aziendale (ha)</label>
+                    <input type="number" min="0.1" step="0.1" id="superficie_totale" name="superficie_totale" value="{{ form.get('superficie_totale', '') }}" placeholder="Es. 25.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="nuova_piantumazione">Superficie da destinare a nuova piantumazione (ha)</label>
+                    <input type="number" min="0" step="0.1" id="nuova_piantumazione" name="nuova_piantumazione" value="{{ form.get('nuova_piantumazione', 0) }}">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label for="superficie_bosco">Superficie forestale (ha)</label>
                     <input type="number" min="0" step="0.1" id="superficie_bosco" name="superficie_bosco" value="{{ form.get('superficie_bosco', 0) }}">
                 </div>
                 <div class="form-group">
-                    <label for="superficie_agricola">Di cui agricola (ha)</label>
+                    <label for="superficie_agricola">Superficie agricola produttiva (ha)</label>
                     <input type="number" min="0" step="0.1" id="superficie_agricola" name="superficie_agricola" value="{{ form.get('superficie_agricola', 0) }}">
                 </div>
                 <div class="form-group">
@@ -345,31 +444,290 @@
                     <input type="number" min="0" step="0.1" id="superficie_altra" name="superficie_altra" value="{{ form.get('superficie_altra', 0) }}">
                 </div>
             </div>
-            
-            <div class="form-group" style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 1.5rem;">
-                <label for="nuova_piantumazione">Superficie che l'azienda vuole destinare a nuova piantumazione (ha)</label>
-                <input type="number" min="0" step="0.1" id="nuova_piantumazione" name="nuova_piantumazione" value="{{ form.get('nuova_piantumazione', 0) }}">
-                <p class="help-text">Superficie che l'azienda intende convertire ad area boschiva</p>
+
+            <div class="subsection-title">Dimensione aziendale</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="fatturato_annuo">Fatturato annuo (€)</label>
+                    <input type="number" min="0" step="1000" id="fatturato_annuo" name="fatturato_annuo" value="{{ form.get('fatturato_annuo', '') }}" placeholder="Es. 1500000">
+                    <p class="help-text">Soglie <span class="tip" tabindex="0" data-tip="EU SME Definition: la classificazione ufficiale UE delle piccole e medie imprese, basata su fatturato, dipendenti e attivo di bilancio.">EU SME<span class="tip-icon">ⓘ</span></span>: micro &lt;2M / piccola 2-10M / media 10-50M</p>
+                </div>
+                <div class="form-group">
+                    <label for="numero_dipendenti">Numero di dipendenti</label>
+                    <input type="number" min="0" step="1" id="numero_dipendenti" name="numero_dipendenti" value="{{ form.get('numero_dipendenti', '') }}" placeholder="Es. 8">
+                    <p class="help-text">Soglie EU SME: micro &lt;10 / piccola 10-49 / media 50-249</p>
+                </div>
             </div>
         </div>
 
-        <!-- SEZIONE 2 -->
+        <!-- SEZIONE 2 — Famiglia 2: Certificazioni e requisiti di filiera -->
         <div class="card">
-            <h2 class="card-title"><span>2</span> Obiettivi e Motivazioni</h2>
-            <p class="card-desc">Quali sono le ragioni principali che spingono l'azienda verso questo percorso? (Seleziona una o più opzioni)</p>
-            
+            <h2 class="card-title"><span class="step-num">2</span> Certificazioni e Requisiti di Filiera</h2>
+            <p class="card-desc">Certificazioni possedute e richieste che arrivano dalla filiera o dai clienti. Corrisponde alla Famiglia 2 della tabella dei criteri.</p>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="certificazioni_esistenti">Possiedi già certificazioni (es. <span class="tip" tabindex="0" data-tip="FSC (Forest Stewardship Council) e PEFC (Programme for the Endorsement of Forest Certification): le due principali certificazioni internazionali di gestione forestale sostenibile.">PEFC/FSC<span class="tip-icon">ⓘ</span></span>, biologico)?</label>
+                    <select id="certificazioni_esistenti" name="certificazioni_esistenti" required onchange="toggleReveal(this, 'certificazione_tipo_wrap', 'si')">
+                        <option value="no" {% if form.get('certificazioni_esistenti') == 'no' %}selected{% endif %}>No, è il primo approccio</option>
+                        <option value="si" {% if form.get('certificazioni_esistenti') == 'si' %}selected{% endif %}>Sì, abbiamo già esperienza</option>
+                    </select>
+                    <p class="help-text">Questa risposta copre anche l'esperienza pregressa richiesta nella Sezione 5.</p>
+                    <div id="certificazione_tipo_wrap" style="{% if form.get('certificazioni_esistenti') != 'si' %}display:none;{% endif %} margin-top: 1rem;">
+                        <label for="certificazione_tipo">Di che tipo?</label>
+                        <select id="certificazione_tipo" name="certificazione_tipo">
+                            <option value="">— Non specificato —</option>
+                            <option value="biologica" {% if form.get('certificazione_tipo') == 'biologica' %}selected{% endif %}>Certificazione biologica (Reg. UE 2018/848)</option>
+                            <option value="forestale" {% if form.get('certificazione_tipo') == 'forestale' %}selected{% endif %}>Certificazione forestale (FSC o PEFC)</option>
+                            <option value="entrambe" {% if form.get('certificazione_tipo') == 'entrambe' %}selected{% endif %}>Entrambe (biologico + forestale)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="piano_gestione_forestale">
+                        <span class="tip" tabindex="0" data-tip="Un documento tecnico, validato da un ente certificatore, che pianifica nel tempo il taglio, la cura e la rigenerazione del bosco secondo criteri di sostenibilità.">Piano di Gestione Forestale<span class="tip-icon">ⓘ</span></span>
+                        Sostenibile Certificato
+                    </label>
+                    <select id="piano_gestione_forestale" name="piano_gestione_forestale">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('piano_gestione_forestale') == 'no' %}selected{% endif %}>No</option>
+                        <option value="si" {% if form.get('piano_gestione_forestale') == 'si' %}selected{% endif %}>Sì</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partecipazione_esg">
+                        Partecipazione a schemi
+                        <span class="tip" tabindex="0" data-tip="ESG: i tre ambiti — Ambientale, Sociale e di Governance — usati per valutare la sostenibilità e l'impatto etico di un'azienda. In italiano l'ambito è spesso chiamato RSI (Responsabilità Sociale d'Impresa).">ESG<span class="tip-icon">ⓘ</span></span>
+                        / <span class="tip" tabindex="0" data-tip="RSI (Responsabilità Sociale d'Impresa): l'impegno volontario di un'azienda verso pratiche etiche, sociali e ambientali che vanno oltre gli obblighi di legge. In inglese: CSR (Corporate Social Responsibility).">RSI<span class="tip-icon">ⓘ</span></span>
+                        (es. <span class="tip" tabindex="0" data-tip="EcoVadis e CDP sono piattaforme indipendenti che assegnano un punteggio (o una medaglia: Bronzo/Argento/Oro/Platino) alle performance di sostenibilità di un'azienda — spesso richieste dai grandi committenti ai propri fornitori.">EcoVadis, CDP<span class="tip-icon">ⓘ</span></span>)
+                    </label>
+                    <select id="partecipazione_esg" name="partecipazione_esg">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('partecipazione_esg') == 'no' %}selected{% endif %}>No</option>
+                        <option value="in_corso" {% if form.get('partecipazione_esg') == 'in_corso' %}selected{% endif %}>In corso di valutazione</option>
+                        <option value="si" {% if form.get('partecipazione_esg') == 'si' %}selected{% endif %}>Sì, già attiva</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="richiesta_dati_clienti">
+                        Richiesta di dati/report ambientali da clienti o capofiliera
+                    </label>
+                    <select id="richiesta_dati_clienti" name="richiesta_dati_clienti">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('richiesta_dati_clienti') == 'no' %}selected{% endif %}>No, mai richiesto</option>
+                        <option value="informale" {% if form.get('richiesta_dati_clienti') == 'informale' %}selected{% endif %}>Sì, tramite questionari informali</option>
+                        <option value="strutturata" {% if form.get('richiesta_dati_clienti') == 'strutturata' %}selected{% endif %}>Sì, tramite piattaforme strutturate/certificate</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3 — Famiglia 3: Monitoraggio e disponibilità dei dati -->
+        <div class="card">
+            <h2 class="card-title"><span class="step-num">3</span> Monitoraggio e Disponibilità dei Dati</h2>
+            <p class="card-desc">Quanto l'azienda già misura e monitora. Corrisponde alla Famiglia 3 della tabella dei criteri.</p>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="dati_disponibili">
+                        Qualità dei dati interni (consumo gasolio, elettricità, standard
+                        <span class="tip" tabindex="0" data-tip="GHG Protocol e ISO 14064 sono gli standard internazionali più usati per misurare e rendicontare le emissioni di gas serra (GHG) di un'azienda.">GHG/ISO 14064<span class="tip-icon">ⓘ</span></span>, ...)
+                    </label>
+                    <select id="dati_disponibili" name="dati_disponibili" required>
+                        <option value="bassi" {% if form.get('dati_disponibili') == 'bassi' %}selected{% endif %}>Bassa (dati frammentari, difficile reperibilità)</option>
+                        <option value="medi" {% if form.get('dati_disponibili') == 'medi' %}selected{% endif %}>Media (dati di base presenti in contabilità)</option>
+                        <option value="alti" {% if form.get('dati_disponibili') == 'alti' %}selected{% endif %}>Alta (sistema gestionale o database strutturato)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dati_biomassa_forestale">
+                        Dati sulla crescita della biomassa forestale
+                    </label>
+                    <select id="dati_biomassa_forestale" name="dati_biomassa_forestale">
+                        <option value="">— Non specificato —</option>
+                        <option value="assenti" {% if form.get('dati_biomassa_forestale') == 'assenti' %}selected{% endif %}>Assenti</option>
+                        <option value="parziali" {% if form.get('dati_biomassa_forestale') == 'parziali' %}selected{% endif %}>Parziali</option>
+                        <option value="strutturati" {% if form.get('dati_biomassa_forestale') == 'strutturati' %}selected{% endif %}>Strutturati</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="soc_misurazione">
+                        Misurazione del
+                        <span class="tip" tabindex="0" data-tip="SOC (Carbonio Organico del Suolo): la quantità di carbonio immagazzinato nel terreno agricolo — un indicatore chiave della salute e fertilità del suolo.">Carbonio Organico del Suolo (SOC)<span class="tip-icon">ⓘ</span></span>
+                    </label>
+                    <select id="soc_misurazione" name="soc_misurazione">
+                        <option value="">— Non specificato —</option>
+                        <option value="nessuna" {% if form.get('soc_misurazione') == 'nessuna' %}selected{% endif %}>Nessuna analisi</option>
+                        <option value="base" {% if form.get('soc_misurazione') == 'base' %}selected{% endif %}>Analisi chimico-fisica di base</option>
+                        <option value="avanzata" {% if form.get('soc_misurazione') == 'avanzata' %}selected{% endif %}>Analisi microbiologiche avanzate</option>
+                        <option value="complessa" {% if form.get('soc_misurazione') == 'complessa' %}selected{% endif %}>Indici biologici complessi standardizzati</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="biodiversita_indicatori">
+                        Disponibilità di indicatori di biodiversità e di qualità biologica del suolo
+                    </label>
+                    <select id="biodiversita_indicatori" name="biodiversita_indicatori">
+                        <option value="">— Non specificato —</option>
+                        <option value="nessuno" {% if form.get('biodiversita_indicatori') == 'nessuno' %}selected{% endif %}>Nessun rilievo</option>
+                        <option value="qualitativo" {% if form.get('biodiversita_indicatori') == 'qualitativo' %}selected{% endif %}>Rilievi qualitativi occasionali (es. presenza di lombrichi, api, siepi, funghi nel terreno)</option>
+                        <option value="sistematico" {% if form.get('biodiversita_indicatori') == 'sistematico' %}selected{% endif %}>Monitoraggio sistematico e strutturato</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="misurazione_scope_ghg">
+                        Disponibilità di dati sulle emissioni per
+                        <span class="tip" tabindex="0" data-tip="Scope 1 = emissioni dirette (es. trattori, mezzi aziendali). Scope 2 = emissioni indirette da energia elettrica acquistata. Scope 3 = tutte le altre emissioni indirette lungo la filiera (fornitori, trasporti, prodotti acquistati).">Scope 1, 2 e 3<span class="tip-icon">ⓘ</span></span>
+                    </label>
+                    <select id="misurazione_scope_ghg" name="misurazione_scope_ghg">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('misurazione_scope_ghg') == 'no' %}selected{% endif %}>No</option>
+                        <option value="scope1" {% if form.get('misurazione_scope_ghg') == 'scope1' %}selected{% endif %}>Scope 1 soltanto</option>
+                        <option value="scope1_2" {% if form.get('misurazione_scope_ghg') == 'scope1_2' %}selected{% endif %}>Scope 1 + 2</option>
+                        <option value="scope1_2_3" {% if form.get('misurazione_scope_ghg') == 'scope1_2_3' %}selected{% endif %}>Scope 1 + 2 + 3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 4 — Famiglia 4: Risorse e capacità organizzativa -->
+        <div class="card">
+            <h2 class="card-title"><span class="step-num">4</span> Risorse e Capacità Organizzativa</h2>
+            <p class="card-desc">Tempo, budget e struttura interna disponibili per il progetto. Corrisponde alla Famiglia 4 della tabella dei criteri.</p>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="orizzonte">
+                        Orizzonte temporale dell'impegno (anni)
+                    </label>
+                    <input type="number" min="0" step="1" id="orizzonte" name="orizzonte" value="{{ form.get('orizzonte', '') }}" placeholder="Es. 20" required>
+                    <p class="help-text">
+                        La soglia minima per il registro nazionale dei crediti di carbonio è di 20 anni
+                        (decreto MASAF-MASE 17/10/2025).
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="budget">Budget disponibile per investimento e verifica</label>
+                    <select id="budget" name="budget" required>
+                        <option value="basso" {% if form.get('budget') == 'basso' %}selected{% endif %}>Limitato (meno di 1.000 €)</option>
+                        <option value="medio" {% if form.get('budget') == 'medio' %}selected{% endif %}>Medio (fino a 10.000 €)</option>
+                        <option value="alto" {% if form.get('budget') == 'alto' %}selected{% endif %}>Elevato (oltre 10.000 €)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="responsabile_interno">
+                        Presenza di un responsabile interno o team dedicato
+                    </label>
+                    <select id="responsabile_interno" name="responsabile_interno">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('responsabile_interno') == 'no' %}selected{% endif %}>No</option>
+                        <option value="si" {% if form.get('responsabile_interno') == 'si' %}selected{% endif %}>Sì</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="finanziamenti_transizione">
+                        Finanziamenti bancari per transizione ecologica
+                    </label>
+                    <select id="finanziamenti_transizione" name="finanziamenti_transizione">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('finanziamenti_transizione') == 'no' %}selected{% endif %}>No</option>
+                        <option value="ordinari" {% if form.get('finanziamenti_transizione') == 'ordinari' %}selected{% endif %}>Sì, tramite canali ordinari</option>
+                        <option value="dedicati" {% if form.get('finanziamenti_transizione') == 'dedicati' %}selected{% endif %}>Sì, tramite linee di credito dedicate alla sostenibilità (es. plafond ESG)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 5 — Famiglia 5: Motivazione ed esperienza pregressa -->
+        <div class="card">
+            <h2 class="card-title"><span class="step-num">5</span> Motivazione ed Esperienza Pregressa</h2>
+            <p class="card-desc">Esperienza già maturata su percorsi simili e obiettivi che guidano la scelta. Corrisponde alla Famiglia 5 della tabella dei criteri, con gli Obiettivi (ex Sezione 7 del questionario) accorpati qui per il layout del form.</p>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="investimenti_compensazione_esterna">
+                        Investimenti già effettuati in <span class="tip" tabindex="0" data-tip="Comprare crediti generati da altri (es. un progetto di riforestazione di terzi), invece di generarli in proprio.">compensazione esterna<span class="tip-icon">ⓘ</span></span>
+                    </label>
+                    <select id="investimenti_compensazione_esterna" name="investimenti_compensazione_esterna" onchange="toggleReveal(this, 'compensazione_esterna_dettaglio_wrap', 'si')">
+                        <option value="">— Non specificato —</option>
+                        <option value="no" {% if form.get('investimenti_compensazione_esterna') == 'no' %}selected{% endif %}>No</option>
+                        <option value="si" {% if form.get('investimenti_compensazione_esterna') == 'si' %}selected{% endif %}>Sì</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="esperienza_pratiche_agroecologiche">
+                        Esperienza pregressa in pratiche agroecologiche o in schemi di certificazione
+                    </label>
+                    <select id="esperienza_pratiche_agroecologiche" name="esperienza_pratiche_agroecologiche" onchange="toggleRevealMulti(this, 'pratiche_agroecologiche_wrap', ['pilota', 'consolidata'])">
+                        <option value="">— Non specificato —</option>
+                        <option value="nessuna" {% if form.get('esperienza_pratiche_agroecologiche') == 'nessuna' %}selected{% endif %}>Nessuna</option>
+                        <option value="pilota" {% if form.get('esperienza_pratiche_agroecologiche') == 'pilota' %}selected{% endif %}>Pilota in corso</option>
+                        <option value="consolidata" {% if form.get('esperienza_pratiche_agroecologiche') == 'consolidata' %}selected{% endif %}>Consolidata</option>
+                    </select>
+                </div>
+            </div>
+
+            {% set comp_esterna = form.get('investimenti_compensazione_esterna') %}
+            <div id="compensazione_esterna_dettaglio_wrap" style="{% if comp_esterna != 'si' %}display:none;{% endif %} margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                <label for="compensazione_esterna_dettaglio">
+ Quale progetto / area? 
+                </label>
+                <input type="text" id="compensazione_esterna_dettaglio" name="compensazione_esterna_dettaglio"
+                       value="{{ form.get('compensazione_esterna_dettaglio', '') }}"
+                       placeholder="Es. nome del progetto, area geografica, tipologia (riforestazione, ripristino di aree degradate, ecc.)">
+                <p class="help-text">Facoltativo — aiuta a valutare la coerenza e la credibilità dell'investimento dichiarato.</p>
+            </div>
+
+            {% set esp_pratiche = form.get('esperienza_pratiche_agroecologiche') %}
+            <div id="pratiche_agroecologiche_wrap" style="{% if esp_pratiche not in ('pilota', 'consolidata') %}display:none;{% endif %} margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                <label>
+                    Quali pratiche agroecologiche?
+                </label>
+                <p class="help-text" style="margin-bottom: 0.75rem;">
+                    Pratiche concrete tratte da <a href="https://www.fao.org/agroecology/database/tape" target="_blank" rel="noopener">FAO TAPE</a>
+                    (Tool for Agroecology Performance Evaluation) e dagli <a href="https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/12126" target="_blank" rel="noopener">eco-schemi della PAC 2023-2027</a> italiani.
+                    Seleziona quelle già applicate in azienda.
+                </p>
+                {% set pratiche_selezionate = form.get('pratiche_agroecologiche', []) %}
+                <div class="checkbox-grid compact">
+                    {% for value, label, tip in [
+                        ('rotazione_colturale', 'Rotazione delle colture', 'Alternanza sistematica delle colture sul terreno arabile per mantenere la fertilità del suolo e ridurre malattie e parassiti.'),
+                        ('cover_crop', 'Copertura vegetale del suolo (cover crop / inerbimento)', 'Colture di copertura in frutteti, vigneti, oliveti o seminativi per proteggere il suolo e ridurre l\'erosione.'),
+                        ('diversificazione_colturale', 'Diversificazione colturale', 'Coltivazione di più specie o varietà invece della monocoltura.'),
+                        ('agroforestazione', 'Agroforestazione', 'Integrazione di alberi con colture o allevamento — sistemi silvopastorali, alley cropping, siepi produttive.'),
+                        ('riciclo_sostanza_organica', 'Riciclo della sostanza organica', 'Reimpiego di letame, residui colturali o compost come fertilizzante, al posto di input di sintesi.'),
+                        ('riduzione_input_chimici', 'Riduzione degli input chimici di sintesi', 'Sostituzione o riduzione di fertilizzanti e fitofarmaci di sintesi con alternative biologiche o meccaniche (lotta integrata).'),
+                        ('sementi_locali', 'Sementi o razze locali/aziendali', 'Uso di sementi o razze autoprodotte, locali o adattate, invece di soli input acquistati.'),
+                        ('benessere_animale', 'Benessere animale e pascolo estensivo', 'Sistemi di allevamento estensivo, riduzione dell\'uso di antibiotici, certificazioni di benessere animale.'),
+                        ('irrigazione_efficiente', 'Gestione idrica efficiente', 'Impianti o programmazione dell\'irrigazione per ridurre il consumo d\'acqua.'),
+                        ('fasce_impollinatori', 'Fasce inerbite e habitat per impollinatori', 'Aree non produttive, fasce fiorite o siepi per favorire impollinatori e biodiversità.'),
+                        ('filiera_corta', 'Filiera corta e vendita diretta', 'Vendita diretta al consumatore o attraverso circuiti locali e brevi.'),
+                        ('paesaggio_tradizionale', 'Conservazione del paesaggio agricolo tradizionale', 'Tutela di paesaggi agricoli storici, es. oliveti secolari o terrazzamenti.')
+                    ] %}
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="pratiche_agroecologiche" value="{{ value }}" {% if value in pratiche_selezionate %}checked{% endif %}>
+                        <span class="tip" tabindex="0" data-tip="{{ tip }}">{{ label }}<span class="tip-icon">ⓘ</span></span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="subsection-title">Obiettivi — perché l'azienda persegue questo percorso</div>
+            <p class="card-desc" style="margin-top: -0.75rem;">
+                Quali sono le ragioni principali che spingono l'azienda verso questo percorso? (Seleziona una o più opzioni)
+            </p>
             {% set selected = form.get('motivazioni', []) %}
             <div class="checkbox-grid">
                 {% for value, label in [
-                    ('report_sostenibilita','Redigere un report di sostenibilità (ESG)'),
-                    ('misurare_emissioni','Calcolare la Carbon Footprint aziendale'),
-                    ('vendita_crediti','Vendere crediti di carbonio / di sostenibilità sul mercato'),
-                    ('richiesta_clienti','Rispondere a richieste della filiera o dei clienti'),
-                    ('compensazione','Compensare le proprie emissioni di CO2'),
-                    ('gestione_sostenibile','Migliorare la gestione e i processi interni'),
-                    ('riduzione_emissioni','Impostare un piano di riduzione delle emissioni'),
-                    ('reputazione','Migliorare la reputazione nei confronti dei propri stakeholder'),
-                    ('biodiversita','Valorizzare gli impatti positivi sulla biodiversità')
+                    ('vendita_crediti','Vendere crediti di carbonio o di sostenibilità sui mercati volontari'),
+                    ('compensazione','Compensare le proprie emissioni'),
+                    ('report_sostenibilita','Redigere un report/bilancio di sostenibilità'),
+                    ('misurare_emissioni','Misurare la propria carbon footprint'),
+                    ('riduzione_emissioni','Ridurre le proprie emissioni nel tempo'),
+                    ('gestione_sostenibile',"Migliorare la gestione sostenibile dell'azienda"),
+                    ('richiesta_clienti','Rispondere a richieste di dati da clienti o filiera'),
+                    ('reputazione','Rafforzare la reputazione aziendale'),
+                    ('biodiversita',"Valorizzare l'impegno ambientale dell'azienda (miglioramento della biodiversità, sequestro di CO2, ecc.)")
                 ] %}
                 <label class="checkbox-label">
                     <input type="checkbox" name="motivazioni" value="{{ value }}" {% if value in selected %}checked{% endif %}>
@@ -379,51 +737,28 @@
             </div>
         </div>
 
-        <!-- SEZIONE 3 -->
-        <div class="card">
-            <h2 class="card-title"><span>3</span> Esperienza e Risorse</h2>
-            <p class="card-desc">Fornisci un'indicazione delle risorse disponibili e del tuo livello di conoscenze degli strumenti di certificazione/rendicontazione</p>
-            
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="dati_disponibili">Qualità dei dati interni (consumo gasolio, elettricità, ...)</label>
-                    <select id="dati_disponibili" name="dati_disponibili" required>
-                        <option value="bassi" {% if form.get('dati_disponibili') == 'bassi' %}selected{% endif %}>Bassa (dati frammentari, difficile reperibilità)</option>
-                        <option value="medi" {% if form.get('dati_disponibili') == 'medi' %}selected{% endif %}>Media (dati di base presenti in contabilità)</option>
-                        <option value="alti" {% if form.get('dati_disponibili') == 'alti' %}selected{% endif %}>Alta (sistema gestionale o database strutturato)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="certificazioni_esistenti">Possiedi già certificazioni (es. ISO, BIO, FSC)?</label>
-                    <select id="certificazioni_esistenti" name="certificazioni_esistenti" required>
-                        <option value="no" {% if form.get('certificazioni_esistenti') == 'no' %}selected{% endif %}>No, è il primo approccio</option>
-                        <option value="si" {% if form.get('certificazioni_esistenti') == 'si' %}selected{% endif %}>Sì, abbiamo già esperienza</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="budget">Budget disponibile per il progetto</label>
-                    <select id="budget" name="budget" required>
-                        <option value="basso" {% if form.get('budget') == 'basso' %}selected{% endif %}>Limitato (meno di 1.000 €)</option>
-                        <option value="medio" {% if form.get('budget') == 'medio' %}selected{% endif %}>Medio (fino a 10.000 €)</option>
-                        <option value="alto" {% if form.get('budget') == 'alto' %}selected{% endif %}>Elevato (oltre 10.000 €)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="orizzonte">Orizzonte temporale desiderato</label>
-                    <select id="orizzonte" name="orizzonte" required>
-                        <option value="breve" {% if form.get('orizzonte') == 'breve' %}selected{% endif %}>Breve (risultati entro 12 mesi)</option>
-                        <option value="medio" {% if form.get('orizzonte') == 'medio' %}selected{% endif %}>Medio (1-3 anni)</option>
-                        <option value="lungo" {% if form.get('orizzonte') == 'lungo' %}selected{% endif %}>Lungo (impegni oltre i 5 anni)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
         <div class="actions">
             <button type="submit" class="btn-primary">Individua il Percorso più Adatto</button>
             <a href="/" class="btn-secondary">Resetta Dati</a>
         </div>
     </form>
+
+    <script>
+        // Mostra/nasconde un campo di dettaglio quando la select principale raggiunge un certo valore.
+        function toggleReveal(selectEl, wrapId, showValue) {
+            var wrap = document.getElementById(wrapId);
+            if (wrap) {
+                wrap.style.display = (selectEl.value === showValue) ? 'block' : 'none';
+            }
+        }
+
+        function toggleRevealMulti(selectEl, wrapId, showValues) {
+            var wrap = document.getElementById(wrapId);
+            if (wrap) {
+                wrap.style.display = (showValues.indexOf(selectEl.value) !== -1) ? 'block' : 'none';
+            }
+        }
+    </script>
 
     {% if result %}
     <div id="risultati" class="results-header">
@@ -439,7 +774,7 @@
             {% if loop.first %}
             <div class="top-match-badge">⭐ SCELTA RACCOMANDATA</div>
             {% endif %}
-            
+
             <div class="schema-header">
                 <div class="schema-title-wrapper">
                     <div class="schema-icon">{{ item.icona }}</div>
@@ -448,7 +783,7 @@
                         <h3>{{ item.titolo }}</h3>
                     </div>
                 </div>
-                
+
                 <div class="score-circle">
                     <div class="score-value">{{ item.compatibilita }}%</div>
                     <div class="score-label">Compatibilità</div>
@@ -460,7 +795,7 @@
 
             <div class="schema-body">
                 <p class="schema-desc">{{ item.descrizione }}</p>
-                
+
                 <div class="info-grid">
                     <div class="info-section">
                         <h4>Target & Requisiti</h4>
@@ -471,7 +806,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    
+
                     <div class="info-section">
                         <h4>Pro & Contro</h4>
                         <ul class="info-list">
@@ -506,7 +841,63 @@
         </article>
         {% endfor %}
     </div>
-    
+
+    {% if risultati_pesi %}
+    <div class="card" style="margin: 0 auto 2.5rem; max-width: 900px;">
+        <h2 class="card-title">
+            <span class="step-num">⚖️</span>
+            Sistema a pesi 1-4
+        </h2>
+        <p class="card-desc">
+            Calcolo alternativo, basato sulla tabella "Criteri e fonti": per ogni criterio che hai
+            compilato, la classe in cui rientri ha un peso da 1 a 4 per ciascun percorso; il
+            punteggio qui sotto è la media di quei pesi. <strong>I pesi mostrati sono quelli
+            proposti dal team di progetto</strong> — i valori definitivi arriveranno dal
+            questionario ai 50 stakeholder del progetto, non ancora raccolto. Non sostituisce il
+            risultato principale sopra: è mostrato in parallelo per confronto.
+        </p>
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+            {% for item in risultati_pesi %}
+            <div style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md, 12px); padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <strong>{{ item.icona }} {{ item.titolo }}</strong>
+                    <span style="font-size: 1.3rem; font-weight: 700; color: var(--primary);">
+                        {% if item.percentuale is not none %}{{ item.percentuale }}%{% else %}—{% endif %}
+                    </span>
+                </div>
+                <div class="help-text" style="margin-top: 0.35rem;">
+                    {% if item.media_1_4 is not none %}
+                        Media {{ item.media_1_4 }} / 4 su {{ item.n_criteri_usati }} criteri compilati.
+                    {% else %}
+                        Nessun criterio compilato ancora rilevante per questo percorso.
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <details>
+            <summary style="cursor: pointer; color: var(--secondary); font-weight: 600;">
+                Dettaglio criterio per criterio (per verifica interna)
+            </summary>
+            <ul class="info-list" style="margin-top: 1rem;">
+                {% for d in risultati_pesi_dettaglio %}
+                <li>
+                    {% if d.usato %}✅{% else %}⬜{% endif %}
+                    <strong>{{ d.criterio }}</strong>{% if d.classe %} — {{ d.classe }}{% else %} — non compilato{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if risultati_pesi_non_collegati %}
+            <p class="help-text" style="margin-top: 1rem;">
+                Criteri della tabella non ancora collegati a un campo del form (esclusi dal calcolo,
+                non contati come zero): {{ risultati_pesi_non_collegati | join(", ") }}.
+            </p>
+            {% endif %}
+        </details>
+    </div>
+    {% endif %}
+
     <script>
         // Anima le progress bar al caricamento
         document.addEventListener("DOMContentLoaded", function() {
@@ -515,7 +906,7 @@
                     bar.style.width = bar.getAttribute('data-target');
                 });
             }, 300);
-            
+
             // Scroll smooth ai risultati
             document.getElementById('risultati').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
